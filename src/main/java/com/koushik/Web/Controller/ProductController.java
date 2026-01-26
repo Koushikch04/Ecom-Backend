@@ -21,7 +21,7 @@ public class ProductController {
         return service.getProducts();
     }
 
-    @GetMapping("/products/{prodId}")
+    @GetMapping("/product/{prodId}")
     public Optional<Product> getProduct(@PathVariable int prodId) {
         Optional<Product> prod = service.getProduct(prodId);
         System.out.println("Hello");
