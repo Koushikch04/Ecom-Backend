@@ -1,5 +1,6 @@
 package com.koushik.Web.Model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,7 @@ public class Product {
     @Column(length = 1000)
     private String description;
 
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-mm-yyyy")
     private Date releaseDate;
     private Boolean available;
     private Integer quantity;

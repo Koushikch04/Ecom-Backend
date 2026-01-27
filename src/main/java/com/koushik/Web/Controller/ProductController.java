@@ -1,6 +1,7 @@
 package com.koushik.Web.Controller;
 
 import com.koushik.Web.Dto.ProductCreateDTO;
+import com.koushik.Web.Dto.ProductUpdateDTO;
 import com.koushik.Web.Model.Product;
 import com.koushik.Web.Service.ProductService;
 import jakarta.validation.Valid;
@@ -34,9 +35,11 @@ public class ProductController {
         service.addProduct(product);
     }
 
-    @PutMapping("/product")
-    public void updateProduct(@RequestBody Product product){
-        service.updateProduct(product);
+    @PutMapping("/product/{prodId}")
+    public void updateProduct(@RequestBody ProductUpdateDTO product, @PathVariable int prodId) {
+        System.out.println("updateProduct");
+        System.out.println(product);
+        service.updateProduct(prodId, product);
     }
 
     @DeleteMapping("/product/{prodId}")

@@ -1,6 +1,7 @@
 package com.koushik.Web.Service;
 
 import com.koushik.Web.Dto.ProductCreateDTO;
+import com.koushik.Web.Dto.ProductUpdateDTO;
 import com.koushik.Web.Model.Product;
 import com.koushik.Web.repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,6 @@ public class ProductService {
 
     @Autowired
     ProductRepo repo;
-
-
-//    private final List<Product> products = new ArrayList<>(
-//            Arrays.asList(
-//                    new Product(101, "Iphone", 5000),
-//                    new Product(102, "Android", 5000)
-//            )
-//    );
 
     public List<Product> getProducts() {
         return repo.findAll();
@@ -49,8 +42,39 @@ public class ProductService {
         repo.save(prod);
     }
 
-    public void updateProduct(Product product) {
-        repo.save(product);
+    public void updateProduct(int prodId, ProductUpdateDTO dto) {
+
+        System.out.println("Updating product: " + prodId);
+        Product prod = repo.findById(prodId)
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        System.out.println("Updating product: " + prod);
+
+        if (dto.getName() != null)
+            prod.setName(dto.getName());
+
+        if (dto.getCategory() != null)
+            prod.setCategory(dto.getCategory());
+
+        if (dto.getBrand() != null)
+            prod.setBrand(dto.getBrand());
+
+        if (dto.getPrice() != null)
+            prod.setPrice(dto.getPrice());
+
+        if (dto.getDescription() != null)
+            prod.setDescription(dto.getDescription());
+
+        if (dto.getReleaseDate() != null)
+            prod.setReleaseDate(dto.getReleaseDate());
+
+        if (dto.getAvailable() != null)
+            prod.setAvailable(dto.getAvailable());
+
+        if (dto.getQuantity() != null)
+            prod.setQuantity(dto.getQuantity());
+
+        repo.save(prod);
     }
 
     public void deleteProduct(int prodId) {
