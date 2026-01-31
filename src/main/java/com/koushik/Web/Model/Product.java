@@ -30,4 +30,9 @@ public class Product {
     private Date releaseDate;
     private Boolean available;
     private Integer quantity;
+
+    private String imageName;
+    private String imageType;
+    @Lob
+    private byte[]  imageData;
 }
