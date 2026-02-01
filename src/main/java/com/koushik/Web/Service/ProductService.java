@@ -1,17 +1,16 @@
 package com.koushik.Web.Service;
 
 import com.koushik.Web.Dto.ProductCreateDTO;
+import com.koushik.Web.Dto.ProductResponseDTO;
 import com.koushik.Web.Dto.ProductUpdateDTO;
 import com.koushik.Web.Model.Product;
 import com.koushik.Web.repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class ProductService {
@@ -19,15 +18,41 @@ public class ProductService {
     @Autowired
     ProductRepo repo;
 
-    public List<Product> getProducts() {
-        return repo.findAll();
+    public List<ProductResponseDTO> getProducts() {
+        return getProducts(false); // default = false
+    }
+
+    public List<ProductResponseDTO> getProducts(boolean includeImage) {
+        List<Product> products =  repo.findAll();
+        return products.stream().map(product -> {
+            ProductResponseDTO productResponseDTO = new ProductResponseDTO();
+            productResponseDTO.setId(product.getId());
+            productResponseDTO.setName(product.getName());
+            productResponseDTO.setDescription(product.getDescription());
+            productResponseDTO.setPrice(product.getPrice());
+            productResponseDTO.setQuantity(product.getQuantity());
+            productResponseDTO.setBrand(product.getBrand());
+            productResponseDTO.setCategory(product.getCategory());
+            productResponseDTO.setAvailable(product.getAvailable());
+            System.out.println("Getting product with id = " + product.getId());
+            System.out.println("Include image = " + includeImage);
+            if(includeImage && product.getImageData() != null) {
+                System.out.println("Getting image");
+                productResponseDTO.setImageType(product.getImageType());
+//                System.out.println("Image data is : " + Arrays.toString(product.getImageData()));
+                productResponseDTO.setImageBase64(
+                        Base64.getEncoder().encodeToString(product.getImageData())
+                );
+            }
+            return productResponseDTO;
+        }).toList();
     }
 
     public Optional<Product> getProduct(int prodId) {
         return repo.findById(prodId);
     }
 
-    public void addProduct(ProductCreateDTO product) {
+    public Product addProduct(ProductCreateDTO product, MultipartFile productImage) throws IOException {
 
         System.out.println("Saving product: " + product );
         Product prod =  new Product();
@@ -39,10 +64,12 @@ public class ProductService {
         prod.setAvailable(product.getAvailable());
         prod.setQuantity(product.getQuantity());
         prod.setReleaseDate(product.getReleaseDate());
+        prod.setImageData(productImage.getBytes());
         repo.save(prod);
+        return prod;
     }
 
-    public void updateProduct(int prodId, ProductUpdateDTO dto) {
+    public void updateProduct(int prodId, ProductUpdateDTO dto, MultipartFile productImage) throws IOException {
 
         System.out.println("Updating product: " + prodId);
         Product prod = repo.findById(prodId)
@@ -74,10 +101,21 @@ public class ProductService {
         if (dto.getQuantity() != null)
             prod.setQuantity(dto.getQuantity());
 
+        if(productImage != null && !productImage.isEmpty()){
+            System.out.println("Setting image data");
+            prod.setImageData(productImage.getBytes());
+        }
+
+        System.out.println(dto.getImageBase64());
+
         repo.save(prod);
     }
 
     public void deleteProduct(int prodId) {
         repo.deleteById(prodId);
+    }
+
+    public List<Product> searchProducts(String keyword){
+        return repo.searchProducts(keyword);
     }
 }

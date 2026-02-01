@@ -17,4 +17,6 @@ public class ProductResponseDTO {
     private Date releaseDate;
     private Boolean available;
     private Integer quantity;
+    private String imageBase64;
+    private String imageType;
 }

@@ -1,5 +1,6 @@
 package com.koushik.Web.Dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -17,9 +18,12 @@ public class ProductUpdateDTO {
     private String brand;
     private BigDecimal price;
     private String description;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
     private Date releaseDate;
     private Boolean available;
 
     @Min(0)
     private Integer quantity;
+    private String imageBase64;
+    private String imageType;
 }
