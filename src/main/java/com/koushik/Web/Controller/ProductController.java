@@ -65,4 +65,12 @@ public class ProductController {
     public void deleteProduct(@PathVariable int prodId){
         service.deleteProduct(prodId);
     }
+
+    @GetMapping("/products/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam String keyword){
+        List<Product> products = service.searchProducts(keyword);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+
 }
